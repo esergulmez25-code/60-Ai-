@@ -194,7 +194,13 @@
     "cache": "Cache",
     "cacheShort": "Cache",
     "memory": "Memory",
-    "skills": "Skills"
+    "skills": "Skills",
+    "more": "Mehr",
+    "mobileMonitor": "Überwachung",
+    "mobileAccess": "Zugriff",
+    "mobileTools": "Werkzeuge",
+    "mobileSystem": "System",
+    "mobileHelp": "Hilfe"
   },
   "themesPage": {
     "title": "Themen",
