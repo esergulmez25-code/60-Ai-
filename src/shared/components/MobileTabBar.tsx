@@ -64,10 +64,9 @@ export default function MobileTabBar() {
   return (
     <nav
       aria-label="Primary"
-      className="z-30 shrink-0 border-t border-black/5 bg-vibrancy backdrop-blur-xl lg:hidden dark:border-white/5"
-      style={{
-        paddingBottom: "max(env(safe-area-inset-bottom), var(--desktop-safe-bottom))",
-      }}
+      // pb-safe clears the home indicator once installed to a home screen;
+      // px-safe clears the notch in landscape.
+      className="pb-safe px-safe z-30 shrink-0 border-t border-black/5 bg-vibrancy backdrop-blur-xl [--safe-pad-x:0px] [--safe-pad:var(--desktop-safe-bottom)] lg:hidden dark:border-white/5"
     >
       <ul
         className="grid"

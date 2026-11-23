@@ -310,6 +310,25 @@ button .material-symbols-outlined,
   animation: border-glow 2s ease-in-out infinite;
 }
 
+/* Display safe areas (notch, home indicator).
+   These report real values only when the viewport is set to
+   viewport-fit=cover, which the root layout does; otherwise they resolve to 0
+   and the --safe-pad fallback applies, matching the plain padding they
+   replace. Used by the dashboard header and the mobile tab bar so an
+   installed home-screen app clears the status bar and the home indicator. */
+.pt-safe {
+  padding-top: max(var(--safe-pad, 1rem), env(safe-area-inset-top));
+}
+
+.pb-safe {
+  padding-bottom: max(var(--safe-pad, 0px), env(safe-area-inset-bottom));
+}
+
+.px-safe {
+  padding-left: max(var(--safe-pad-x, 1rem), env(safe-area-inset-left));
+  padding-right: max(var(--safe-pad-x, 1rem), env(safe-area-inset-right));
+}
+
 /* macOS Vibrancy/Blur Effect */
 .bg-vibrancy {
   backdrop-filter: blur(20px);

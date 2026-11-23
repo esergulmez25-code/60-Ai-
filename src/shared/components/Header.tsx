@@ -155,7 +155,10 @@ export default function Header() {
 
   return (
     <header
-      className="sticky top-0 z-10 flex items-center justify-between border-b border-black/5 bg-bg/80 px-4 py-4 backdrop-blur-xl lg:px-8 lg:py-5 dark:border-white/5"
+      // --safe-pad / --safe-pad-x are the paddings pt-safe and px-safe fall
+      // back to when the display has no inset to clear; set as classes rather
+      // than inline style so they stay responsive.
+      className="pt-safe px-safe sticky top-0 z-10 flex items-center justify-between border-b border-black/5 bg-bg/80 pb-4 backdrop-blur-xl [--safe-pad-x:1rem] [--safe-pad:1rem] lg:pb-5 lg:[--safe-pad-x:2rem] lg:[--safe-pad:1.25rem] dark:border-white/5"
       style={{
         paddingTop: isMacElectron ? "calc(1.25rem + var(--desktop-safe-top))" : undefined,
       }}
