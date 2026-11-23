@@ -3,7 +3,6 @@
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import PropTypes from "prop-types";
 import ThemeToggle from "./ThemeToggle";
 import TokenHealthBadge from "./TokenHealthBadge";
 import DegradationBadge from "./DegradationBadge";
@@ -28,6 +27,12 @@ function usePageInfo(pathname: string | null): {
   breadcrumbs: { label: string; href?: string; image?: string; providerId?: string }[];
 } {
   const t = useTranslations("header");
+  const tSidebar = useTranslations("sidebar");
+
+  // Read a label from the "sidebar" namespace, falling back to English when a
+  // locale has not been translated yet.
+  const tNav = (key: string, fallback: string) =>
+    typeof tSidebar.has === "function" && tSidebar.has(key) ? tSidebar(key) : fallback;
 
   if (!pathname) return { title: "", description: "", breadcrumbs: [] };
 
@@ -107,6 +112,13 @@ function usePageInfo(pathname: string | null): {
     return { title: t("cliTools"), description: t("cliToolsDescription"), breadcrumbs: [] };
   if (pathname === "/dashboard")
     return { title: t("home"), description: t("homeDescription"), breadcrumbs: [] };
+  // Logs and More are bottom-tab destinations but have no "header" namespace
+  // entry; take their titles from "sidebar", which already names every
+  // navigation destination in every locale.
+  if (pathname.includes("/logs"))
+    return { title: tNav("logs", "Logs"), description: "", breadcrumbs: [] };
+  if (pathname.includes("/more"))
+    return { title: tNav("more", "More"), description: "", breadcrumbs: [] };
   if (pathname.includes("/mcp"))
     return { title: t("mcp"), description: t("mcpDescription"), breadcrumbs: [] };
   if (pathname.includes("/a2a"))
@@ -120,7 +132,7 @@ function usePageInfo(pathname: string | null): {
   return { title: "", description: "", breadcrumbs: [] };
 }
 
-export default function Header({ onMenuClick, showMenuButton = true }) {
+export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const isElectron = useIsElectron();
@@ -143,33 +155,20 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
 
   return (
     <header
-      className="sticky top-0 z-10 flex items-center justify-between border-b border-black/5 bg-bg/80 px-8 py-5 backdrop-blur-xl dark:border-white/5"
+      className="sticky top-0 z-10 flex items-center justify-between border-b border-black/5 bg-bg/80 px-4 py-4 backdrop-blur-xl lg:px-8 lg:py-5 dark:border-white/5"
       style={{
-        paddingTop: isMacElectron
-          ? "calc(1.25rem + var(--desktop-safe-top))"
-          : undefined,
+        paddingTop: isMacElectron ? "calc(1.25rem + var(--desktop-safe-top))" : undefined,
       }}
     >
-      {/* Mobile menu button */}
-      <div className="flex items-center gap-3 lg:hidden">
-        {showMenuButton && (
-          <button
-            onClick={onMenuClick}
-            className="text-text-main hover:text-primary transition-colors"
-          >
-            <span className="material-symbols-outlined">menu</span>
-          </button>
-        )}
-      </div>
-
-      {/* Page title with breadcrumbs - desktop */}
-      <div className="hidden lg:flex flex-col">
+      {/* Page title with breadcrumbs. Shown on every breakpoint: on mobile the
+          bottom tab bar replaced the menu button that used to sit here. */}
+      <div className="flex min-w-0 flex-col">
         {breadcrumbs.length > 0 ? (
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
             {breadcrumbs.map((crumb, index) => (
               <div
                 key={`${crumb.label}-${crumb.href || "current"}`}
-                className="flex items-center gap-2"
+                className="flex min-w-0 items-center gap-2"
               >
                 {index > 0 && (
                   <span className="material-symbols-outlined text-text-muted text-base">
@@ -179,12 +178,12 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
                 {crumb.href ? (
                   <Link
                     href={crumb.href}
-                    className="text-text-muted hover:text-primary transition-colors"
+                    className="truncate text-text-muted hover:text-primary transition-colors"
                   >
                     {crumb.label}
                   </Link>
                 ) : (
-                  <div className="flex items-center gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
                     {crumb.image && (
                       <Image
                         src={crumb.image}
@@ -201,7 +200,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
                     {crumb.providerId && (
                       <ProviderIcon providerId={crumb.providerId} size={28} type="color" />
                     )}
-                    <h1 className="text-2xl font-semibold text-text-main tracking-tight">
+                    <h1 className="truncate text-lg font-semibold tracking-tight text-text-main lg:text-2xl">
                       {crumb.label}
                     </h1>
                   </div>
@@ -210,9 +209,13 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
             ))}
           </div>
         ) : title ? (
-          <div>
-            <h1 className="text-2xl font-semibold text-text-main tracking-tight">{title}</h1>
-            {description && <p className="text-sm text-text-muted">{description}</p>}
+          <div className="min-w-0">
+            <h1 className="truncate text-lg font-semibold tracking-tight text-text-main lg:text-2xl">
+              {title}
+            </h1>
+            {description && (
+              <p className="hidden text-sm text-text-muted lg:block">{description}</p>
+            )}
           </div>
         ) : null}
       </div>
@@ -241,8 +244,3 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
     </header>
   );
 }
-
-Header.propTypes = {
-  onMenuClick: PropTypes.func,
-  showMenuButton: PropTypes.bool,
-};

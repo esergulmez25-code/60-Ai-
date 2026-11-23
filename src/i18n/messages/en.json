@@ -194,7 +194,13 @@
     "themeCyan": "Cyan",
     "cliToolsShort": "Tools",
     "cache": "Cache",
-    "cacheShort": "Cache"
+    "cacheShort": "Cache",
+    "more": "More",
+    "mobileMonitor": "Monitor",
+    "mobileAccess": "Access",
+    "mobileTools": "Tools",
+    "mobileSystem": "System",
+    "mobileHelp": "Help"
   },
   "themesPage": {
     "title": "Themes",
